@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* --- VARIABLE WARNA UNTUK MULTI-TEMA --- */
-        :root {
+        :root[data-theme="light"] {
             --bg-utama: #f4f7f6;
             --bg-kotak: #ffffff;
             --teks-utama: #2c3e50;
@@ -17,9 +17,10 @@
             --bg-input: #f8fafc;
             --border-input: #e2e8f0;
             --teks-input: #334155;
+            --warna-aksen: #3b82f6;
         }
 
-        [data-theme="dark"] {
+        :root[data-theme="dark"] {
             --bg-utama: #0f172a;
             --bg-kotak: #1e293b;
             --teks-utama: #cbd5e1;
@@ -29,16 +30,24 @@
             --bg-input: #334155;
             --border-input: #475569;
             --teks-input: #f1f5f9;
+            --warna-aksen: #60a5fa;
+        }
+
+        /* --- GLOBAL & TRANSISI SEAMLESS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
             max-width: 1100px; 
             margin: 0 auto; 
             padding: 40px 20px; 
             background-color: var(--bg-utama); 
             color: var(--teks-utama);
-            transition: background 0.3s, color 0.3s;
         }
         
         .header-container {
@@ -48,20 +57,80 @@
             margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-input);
         }
 
         h2 { color: var(--teks-judul); font-weight: 700; margin: 0; font-size: 26px; }
 
-        .btn-theme {
-            background: var(--bg-kotak); border: 1px solid var(--border-input);
-            color: var(--teks-utama); padding: 8px 14px; border-radius: 20px;
-            cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px;
-            box-shadow: 0 4px 6px var(--bayangan);
+        /* --- DESIGN TOGGLE SWITCH MODERN --- */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-switch-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--teks-utama);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 32px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            border-radius: 32px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "☀️"; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input:checked + .slider {
+            background-color: #3b82f6;
+        }
+
+        input:checked + .slider::before {
+            transform: translateX(28px);
+            content: "🌙"; 
+            background-color: #1e293b;
         }
 
         .quote-box {
             background: var(--bg-kotak); padding: 10px 16px; border-radius: 10px;
-            font-size: 12.5px; color: #64748b; font-style: italic; border-left: 3px solid #3b82f6; max-width: 450px;
+            font-size: 12.5px; color: var(--teks-input); opacity: 0.8; font-style: italic; border-left: 3px solid #3b82f6; max-width: 450px;
         }
 
         h3 { font-size: 18px; color: var(--teks-judul); margin-top: 0; margin-bottom: 15px; }
@@ -79,11 +148,12 @@
         
         .ringkasan-container { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
         .saldo-box, .budget-box { padding: 16px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; }
+        
         .saldo-box { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; }
-        [data-theme="dark"] .saldo-box { background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%); color: #e0f2fe; }
+        :root[data-theme="dark"] .saldo-box { background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%); color: #e0f2fe; }
         
         .budget-box { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); }
-        [data-theme="dark"] .budget-box { background: linear-gradient(135deg, #451a03 0%, #b45309 100%); }
+        :root[data-theme="dark"] .budget-box { background: linear-gradient(135deg, #451a03 0%, #b45309 100%); }
 
         .saldo-angka { font-size: 24px; font-weight: 700; margin-top: 4px; }
         
@@ -91,7 +161,7 @@
         .progress-bar { height: 100%; width: 0%; background-color: #f59e0b; transition: width 0.4s; }
 
         .over-budget { background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%) !important; }
-        [data-theme="dark"] .over-budget { background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%) !important; }
+        :root[data-theme="dark"] .over-budget { background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%) !important; }
         .over-budget .progress-bar { background-color: #ef4444 !important; }
         
         .komparasi-box { 
@@ -106,7 +176,7 @@
         .status-waspada { background-color: #fef9c3; color: #ca8a04; }
         .status-bahaya { background-color: #fee2e2; color: #dc2626; }
 
-        label { font-weight: 600; display: block; margin-top: 14px; color: #64748b; font-size: 12px; text-transform: uppercase; }
+        label { font-weight: 600; display: block; margin-top: 14px; color: var(--teks-sekunder); font-size: 12px; text-transform: uppercase; opacity: 0.8; }
         input, select { 
             width: 100%; padding: 12px; margin-top: 6px; box-sizing: border-box; border: 1px solid var(--border-input); 
             border-radius: 10px; font-size: 14px; background-color: var(--bg-input); color: var(--teks-input);
@@ -139,7 +209,7 @@
         .tagihan-lunas { text-decoration: line-through; opacity: 0.5; }
         
         .badge-kat { background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-right: 5px; margin-top: 5px;}
-        [data-theme="dark"] .badge-kat { background: #334155; color: #cbd5e1; }
+        :root[data-theme="dark"] .badge-kat { background: #334155; color: #cbd5e1; }
 
         .alokasi-box { background: var(--bg-input); border: 1px solid var(--border-input); padding: 12px; border-radius: 10px; font-size: 12px; margin-top: 8px; display: none; }
         .alokasi-item { display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 500; }
@@ -168,10 +238,15 @@
             .header-container {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 15px;
             }
-            .btn-theme {
+            .theme-switch-wrapper {
                 width: 100%;
-                justify-content: center;
+                justify-content: space-between;
+                background: var(--bg-kotak);
+                padding: 10px 14px;
+                border-radius: 12px;
+                border: 1px solid var(--border-input);
             }
             .search-bar {
                 width: 100%;
@@ -190,7 +265,7 @@
             body { background: white !important; color: black !important; padding: 0 !important; }
             .grid-utama { display: block !important; }
             .box { box-shadow: none !important; border: 1px solid #ccc !important; margin-bottom: 20px !important; background: white !important; page-break-inside: avoid; }
-            button, .btn-theme, .quote-box, .search-bar, .filter-bulan, #tipe-kat-baru, #nama-kat-baru, hr, .flex-tombol, label, input, select, .btn-hapus, .rekening-container { display: none !important; }
+            button, .theme-switch-wrapper, .quote-box, .search-bar, .filter-bulan, #tipe-kat-baru, #nama-kat-baru, hr, .flex-tombol, label, input, select, .btn-hapus, .rekening-container { display: none !important; }
             .chart-container { max-height: 150px !important; }
             ul { max-height: none !important; overflow: visible !important; }
             li { border: 1px solid #ddd !important; margin-bottom: 5px !important; background: transparent !important; }
@@ -204,7 +279,14 @@
             <h2>Dompetku Pro - Ultimate Edition</h2>
             <div class="quote-box" id="isi-quote" style="margin-top: 8px;">...</div>
         </div>
-        <button class="btn-theme" onclick="ubahTema()">Ganti Tema</button>
+        
+        <div class="theme-switch-wrapper">
+            <span class="theme-switch-label" id="tema-teks">Mode Terang</span>
+            <label class="theme-switch" for="checkbox-tema">
+                <input type="checkbox" id="checkbox-tema" onclick="ubahTema()">
+                <div class="slider"></div>
+            </label>
+        </div>
     </div>
 
     <div class="grid-utama">
@@ -360,13 +442,21 @@
     let grafikSaya = null;
     let tipeGrafikAktif = "doughnut";
 
+    // Fungsi utama untuk merubah tema secara seamless
     function ubahTema() {
-        let temaSekarang = document.documentElement.getAttribute("data-theme");
-        let temaBaru = temaSekarang === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", temaBaru);
-        localStorage.setItem("tema_dashboard", temaBaru);
+        let tombolCheck = document.getElementById("checkbox-tema");
+        let teksTema = document.getElementById("tema-teks");
+        
+        if (tombolCheck.checked) {
+            document.documentElement.setAttribute("data-theme", "dark");
+            teksTema.innerText = "Mode Gelap";
+            localStorage.setItem("tema_dashboard", "dark");
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+            teksTema.innerText = "Mode Terang";
+            localStorage.setItem("tema_dashboard", "light");
+        }
     }
-    if (localStorage.getItem("tema_dashboard") === "dark") document.documentElement.setAttribute("data-theme", "dark");
 
     function muatOpsiKategori() {
         let tipe = document.getElementById("tipe").value;
@@ -664,6 +754,23 @@
         input.value = angka ? 'Rp ' + rp : '';
     }
     function bersihkanAngka(teks) { return parseInt(teks.replace(/[^0-9]/g, ''), 10) || 0; }
+
+    // Membaca preferensi memori tema saat web direfresh
+    window.addEventListener('DOMContentLoaded', () => {
+        let temaSistem = localStorage.getItem("tema_dashboard");
+        let tombolCheck = document.getElementById("checkbox-tema");
+        let teksTema = document.getElementById("tema-teks");
+
+        if (temaSistem === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            if (tombolCheck) tombolCheck.checked = true;
+            if (teksTema) teksTema.innerText = "Mode Gelap";
+        } else {
+            document.documentElement.setAttribute("data-theme", "light");
+            if (tombolCheck) tombolCheck.checked = false;
+            if (teksTema) teksTema.innerText = "Mode Terang";
+        }
+    });
 
     muatOpsiKategori(); renderBadgesKategori(); buatFilterBulan(); renderTagihan(); updateTampilan();
 </script>
