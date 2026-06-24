@@ -66,7 +66,11 @@
 
         h3 { font-size: 18px; color: var(--teks-judul); margin-top: 0; margin-bottom: 15px; }
 
-        .grid-utama { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+        .grid-utama { 
+            display: grid; 
+            grid-template-columns: 1.2fr 1fr; 
+            gap: 24px; 
+        }
         .box { 
             background: var(--bg-kotak); padding: 24px; border-radius: 16px; 
             border: 1px solid var(--border-kotak); box-shadow: 0 10px 30px var(--bayangan);
@@ -143,6 +147,45 @@
         .rekening-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; font-size: 12px; }
         .rekening-card { background: var(--bg-input); border: 1px solid var(--border-input); padding: 10px; border-radius: 8px; font-weight: 600; }
 
+        /* --- PERBAIKAN KHUSUS LAYAR HP (RESPONSIF MOBILE) --- */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px 10px;
+            }
+            .grid-utama { 
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .penuh { 
+                grid-column: span 1; 
+            }
+            .ringkasan-container {
+                grid-template-columns: 1fr;
+            }
+            .box {
+                padding: 16px;
+            }
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .btn-theme {
+                width: 100%;
+                justify-content: center;
+            }
+            .search-bar {
+                width: 100%;
+            }
+            .flex-tombol {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .flex-tombol button {
+                margin-top: 5px;
+            }
+        }
+
+        /* --- PRINT OPTIMIZATION --- */
         @media print {
             body { background: white !important; color: black !important; padding: 0 !important; }
             .grid-utama { display: block !important; }
@@ -290,7 +333,7 @@
         <div class="box penuh">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <h3 style="margin:0;">Riwayat Catatan</h3>
-                <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px; width: 100%; max-width: 450px; justify-content: flex-end; flex-wrap: wrap;">
                     <input type="text" id="search-input" class="search-bar" placeholder="Cari..." oninput="updateTampilan()">
                     <select id="filter-bulan" class="filter-bulan" onchange="updateTampilan()"></select>
                 </div>
